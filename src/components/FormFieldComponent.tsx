@@ -3,9 +3,13 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import ModalContainer from "./ModalContainer";
 import { useFormContext } from "./FormContext";
+import { Data, Node } from "../api/getData";
 
-function getNodeFieldsByNodeId(data: any, nodeId: string) {
-  const node = data.nodes.find((node: any) => node.id === nodeId);
+function getNodeFieldsByNodeId(data: Data, nodeId: string) {
+  const node = data.nodes.find((node: Node) => node.id === nodeId);
+  if (!node) {
+    throw new Error("could not find node by id");
+  }
   return node.properties;
 }
 
@@ -16,7 +20,7 @@ export default function FormFieldComponent({
   handleFieldComponentClick,
 }: {
   field: string;
-  node: any;
+  node: Node;
   isActive: boolean;
   handleFieldComponentClick: (id: string | null) => void;
 }) {
@@ -29,7 +33,7 @@ export default function FormFieldComponent({
       const fields = getNodeFieldsByNodeId(data, node.id);
       setSelection(fields[field] === "" ? field : `${field}: ${fields[field]}`);
     }
-  }, [showModal, data]);
+  }, [showModal, data, field, node.id]);
   return (
     <div>
       <div

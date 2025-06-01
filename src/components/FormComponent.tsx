@@ -1,13 +1,14 @@
 "use client";
 import FormFieldComponent from "./FormFieldComponent";
 import { useState } from "react";
+import { Node } from "../api/getData";
 
 export default function FormComponent({
   node,
   selectedComponentId,
   setShowSelectedComponent,
 }: {
-  node: any;
+  node: Node;
   selectedComponentId: string | null;
   setShowSelectedComponent: (id: string | null) => void;
 }) {
@@ -16,19 +17,20 @@ export default function FormComponent({
   const handleFieldComponentClick = (id: string | null) => {
     setActiveID(id);
   };
+  const handleComponentClick = () => {
+    setShowSelectedComponent(node.id);
+  };
   return (
     <div className="flex flex-col border border-white bg-gray-800 my-2 w-fit p-2 rounded">
       <div
-        onClick={() => {
-          setShowSelectedComponent(node.id);
-        }}
+        onClick={handleComponentClick}
         key={node.id}
         className="cursor-pointer"
       >
-        {node.data.name}
+        {node.name}
       </div>
       {isSelected &&
-        Object.keys(node.properties).map((field: any) => (
+        Object.keys(node.properties).map((field: string) => (
           <FormFieldComponent
             key={field}
             field={field}

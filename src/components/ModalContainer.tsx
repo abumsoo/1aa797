@@ -3,9 +3,10 @@
 import ModalItemComponent from "./ModalItemComponent";
 import { useFormDispatchContext } from "./FormContext";
 import { useState } from "react";
+import { Node } from "../api/getData";
 
 interface ModalContainerProps {
-  node: any;
+  node: Node;
   onClose: () => void;
   field: string;
 }
@@ -13,6 +14,7 @@ interface ModalContainerProps {
 interface SelectedField {
   nodeId: string;
   property: string;
+  name: string;
 }
 
 export default function ModalContainer({
@@ -31,18 +33,20 @@ export default function ModalContainer({
   };
 
   return (
-    <div className="flex flex-col border border-white bg-gray-600 w-fit px-4 py-2">
+    // I don't love adding testids, but for the sake of some quick testing
+    <div data-testid="modal-container" className="flex flex-col border border-white bg-gray-600 w-fit px-4 py-2">
       <div className="text-white text-center">Prefill Form</div>
-      {node.data.prerequisites.map((prerequisite: any) => (
+      {node.prerequisites.map((prerequisite: string) => (
         <ModalItemComponent
           key={prerequisite}
           isActive={activePrereq === prerequisite}
           handlePrereqClick={handlePrereqClick}
           prerequisite={prerequisite}
-          onSelection={(selection: string, nodeId: string) => {
+          onSelection={(selection: string, nodeId: string, nodeName: string) => {
             setSelectedField({
               nodeId: nodeId,
               property: selection,
+              name: nodeName,
             });
           }}
         />
@@ -54,13 +58,13 @@ export default function ModalContainer({
           onClick={() => {
             dispatch({
               type: "setPrefill",
-            nodeId: node.id,
-            name: node.data.name,
-            field: field,
-            value: selectedField?.property,
-          });
-          onClose();
-        }}
+              nodeId: node.id,
+              name: selectedField?.name,
+              field: field,
+              value: selectedField?.property,
+            });
+            onClose();
+          }}
       >
         Select
         </button>
